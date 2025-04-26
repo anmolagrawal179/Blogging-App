@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.blog.entity.User;
 import com.blog.exception.ResourceNotFoundException;
 import com.blog.repository.UserRepository;
+import com.blog.response.PaginatedUserResponse;
 import com.blog.response.UserResponse;
 import com.blog.service.UserService;
 
@@ -35,12 +37,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserResponse> getAllUsers(Integer pageNumber, Integer pageSize) {
+	public PaginatedUserResponse getAllUsers(Integer pageNumber, Integer pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-		List<User> users = userRepository.findAll(pageable).getContent();
+		Page<User> page = userRepository.findAll(pageable);
+		List<User> users = page.getContent();
 		List<UserResponse> userResponses = users.stream().map(user -> modelMapper.map(user, UserResponse.class))
 				.collect(Collectors.toList());
-		return userResponses;
+		PaginatedUserResponse paginatedUserResponse = new PaginatedUserResponse();
+		paginatedUserResponse.setUsers(userResponses);
+		paginatedUserResponse.setPageNumber(page.getNumber());
+		paginatedUserResponse.setPageSize(page.getSize());
+		paginatedUserResponse.setTotalElements(page.getTotalElements());
+		paginatedUserResponse.setTotalPages(page.getTotalPages());
+		paginatedUserResponse.setLastPage(page.isLast());
+
+		return paginatedUserResponse;
 	}
 
 	@Override

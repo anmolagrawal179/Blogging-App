@@ -1,6 +1,5 @@
 package com.blog.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.response.CategoryResponse;
+import com.blog.response.PaginatedCategoryResponse;
 import com.blog.service.CategoryService;
 
 import jakarta.validation.Valid;
@@ -37,7 +37,7 @@ public class CategoryController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<CategoryResponse>> getAllCategories(
+	public ResponseEntity<PaginatedCategoryResponse> getAllCategories(
 			@RequestParam(required = false, defaultValue = "1") Integer pageNumber,
 			@RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 		return ResponseEntity.ok(categoryService.getAllCategories(pageNumber, pageSize));

@@ -1,6 +1,5 @@
 package com.blog.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blog.response.PaginatedPostResponse;
 import com.blog.response.PostResponse;
 import com.blog.service.PostService;
 
@@ -39,7 +39,7 @@ public class PostController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<PostResponse>> getAllPosts(
+	public ResponseEntity<PaginatedPostResponse> getAllPosts(
 			@RequestParam(required = false, defaultValue = "1") Integer pageNumber,
 			@RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 		return ResponseEntity.ok(postService.getAllPosts(pageNumber, pageSize));
@@ -51,14 +51,14 @@ public class PostController {
 	}
 
 	@GetMapping("/user/{userId}")
-	public ResponseEntity<List<PostResponse>> getPostByUser(@PathVariable Long userId,
+	public ResponseEntity<PaginatedPostResponse> getPostByUser(@PathVariable Long userId,
 			@RequestParam(required = false, defaultValue = "1") Integer pageNumber,
 			@RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 		return ResponseEntity.ok(postService.getPostsByUser(userId, pageNumber, pageSize));
 	}
 
 	@GetMapping("/category/{categoryId}")
-	public ResponseEntity<List<PostResponse>> getPostByCategory(@PathVariable Long categoryId,
+	public ResponseEntity<PaginatedPostResponse> getPostByCategory(@PathVariable Long categoryId,
 			@RequestParam(required = false, defaultValue = "1") Integer pageNumber,
 			@RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 		return ResponseEntity.ok(postService.getPostsByCategory(categoryId, pageNumber, pageSize));

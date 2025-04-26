@@ -1,14 +1,13 @@
 package com.blog.service;
 
-import java.util.List;
-
 import com.blog.response.CategoryResponse;
+import com.blog.response.PaginatedCategoryResponse;
 
 public interface CategoryService {
 
 	CategoryResponse addCategory(CategoryResponse categoryResponse);
 
-	List<CategoryResponse> getAllCategories(Integer pageNumber, Integer pageSize);
+	PaginatedCategoryResponse getAllCategories(Integer pageNumber, Integer pageSize);
 
 	CategoryResponse getCategoryById(Long id);
 
