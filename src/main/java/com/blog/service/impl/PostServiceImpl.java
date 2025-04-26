@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.blog.entity.Category;
@@ -22,9 +24,9 @@ public class PostServiceImpl implements PostService {
 	private PostRepository postRepository;
 
 	private ModelMapper modelMapper;
-	
+
 	private UserRepository userRepository;
-	
+
 	private CategoryRepository categoryRepository;
 
 	public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper, UserRepository userRepository,
@@ -41,23 +43,24 @@ public class PostServiceImpl implements PostService {
 
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
-		
+
 		Category category = categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category not found with id " + categoryId));
-		Post post=modelMapper.map(postResponse, Post.class);
-		
+		Post post = modelMapper.map(postResponse, Post.class);
+
 		post.setUser(user);
 		post.setCategory(category);
-		
-		Post savedPost=postRepository.save(post);
-		
+
+		Post savedPost = postRepository.save(post);
+
 		return modelMapper.map(savedPost, PostResponse.class);
-		
+
 	}
 
 	@Override
-	public List<PostResponse> getAllPosts() {
-		List<Post> posts = postRepository.findAll();
+	public List<PostResponse> getAllPosts(Integer pageNumber, Integer pageSize) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+		List<Post> posts = postRepository.findAll(pageable).getContent();
 		List<PostResponse> postResponses = posts.stream().map(post -> modelMapper.map(post, PostResponse.class))
 				.collect(Collectors.toList());
 
@@ -78,9 +81,9 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException("Post not found with id " + id));
 		post.setTitle(postResponse.getTitle());
 		post.setDescription(postResponse.getDescription());
-		
-		Post savedPost=postRepository.save(post);
-		
+
+		Post savedPost = postRepository.save(post);
+
 		return modelMapper.map(savedPost, PostResponse.class);
 	}
 
@@ -91,6 +94,28 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException("Post not found with id " + id));
 		postRepository.delete(post);
 
+	}
+
+	@Override
+	public List<PostResponse> getPostsByUser(Long userId, Integer pageNumber, Integer pageSize) {
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+		List<Post> posts = postRepository.findByUser(user, pageable).getContent();
+		List<PostResponse> postResponses = posts.stream().map(post -> modelMapper.map(post, PostResponse.class))
+				.collect(Collectors.toList());
+		return postResponses;
+	}
+
+	@Override
+	public List<PostResponse> getPostsByCategory(Long categoryId, Integer pageNumber, Integer pageSize) {
+		Category category = categoryRepository.findById(categoryId)
+				.orElseThrow(() -> new ResourceNotFoundException("Category not found with id " + categoryId));
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+		List<Post> posts = postRepository.findByCategory(category, pageable).getContent();
+		List<PostResponse> postResponses = posts.stream().map(post -> modelMapper.map(post, PostResponse.class))
+				.collect(Collectors.toList());
+		return postResponses;
 	}
 
 }

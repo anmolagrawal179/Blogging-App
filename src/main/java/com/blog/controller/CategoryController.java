@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.response.CategoryResponse;
@@ -36,8 +37,10 @@ public class CategoryController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<CategoryResponse>> getAllCategories() {
-		return ResponseEntity.ok(categoryService.getAllCategories());
+	public ResponseEntity<List<CategoryResponse>> getAllCategories(
+			@RequestParam(required = false, defaultValue = "1") Integer pageNumber,
+			@RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+		return ResponseEntity.ok(categoryService.getAllCategories(pageNumber, pageSize));
 	}
 
 	@GetMapping("/{id}")

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.blog.entity.User;
@@ -33,8 +35,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserResponse> getAllUsers() {
-		List<User> users = userRepository.findAll();
+	public List<UserResponse> getAllUsers(Integer pageNumber, Integer pageSize) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+		List<User> users = userRepository.findAll(pageable).getContent();
 		List<UserResponse> userResponses = users.stream().map(user -> modelMapper.map(user, UserResponse.class))
 				.collect(Collectors.toList());
 		return userResponses;

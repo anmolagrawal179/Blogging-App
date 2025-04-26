@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.response.UserResponse;
@@ -29,29 +30,33 @@ public class UserController {
 		super();
 		this.userService = userService;
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<UserResponse> addUser(@RequestBody @Valid UserResponse userResponse) {
-		return new ResponseEntity<UserResponse>(userService.addUser(userResponse),HttpStatus.CREATED);
+		return new ResponseEntity<UserResponse>(userService.addUser(userResponse), HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<List<UserResponse>> getAllUsers(){
-		return ResponseEntity.ok(userService.getAllUsers());
+	public ResponseEntity<List<UserResponse>> getAllUsers(
+			@RequestParam(required = false, defaultValue = "1") Integer pageNumber,
+			@RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+		return ResponseEntity.ok(userService.getAllUsers(pageNumber, pageSize));
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<UserResponse> getUserById(@PathVariable Long id){
+	public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
 		return ResponseEntity.ok(userService.getUserById(id));
 	}
-	
+
 	@PutMapping("/{id}")
-	public ResponseEntity<UserResponse> updateUser(@RequestBody @Valid UserResponse userResponse, @PathVariable Long id){
+	public ResponseEntity<UserResponse> updateUser(@RequestBody @Valid UserResponse userResponse,
+			@PathVariable Long id) {
 		return ResponseEntity.ok(userService.updateUser(userResponse, id));
 	}
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteUser(@PathVariable Long id){
+	public ResponseEntity<?> deleteUser(@PathVariable Long id) {
 		userService.deleteUser(id);
-		return ResponseEntity.ok(Map.of("deleted",Boolean.TRUE));
+		return ResponseEntity.ok(Map.of("deleted", Boolean.TRUE));
 	}
 }

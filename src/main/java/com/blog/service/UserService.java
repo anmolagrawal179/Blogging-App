@@ -8,7 +8,7 @@ public interface UserService {
 
 	UserResponse addUser(UserResponse userResponse);
 
-	List<UserResponse> getAllUsers();
+	List<UserResponse> getAllUsers(Integer pageNumber, Integer pageSize);
 
 	UserResponse getUserById(Long id);
 

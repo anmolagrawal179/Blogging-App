@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.blog.entity.Category;
@@ -34,8 +36,9 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<CategoryResponse> getAllCategories() {
-		List<Category> categories = categoryRepository.findAll();
+	public List<CategoryResponse> getAllCategories(Integer pageNumber, Integer pageSize) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+		List<Category> categories = categoryRepository.findAll(pageable).getContent();
 		List<CategoryResponse> categoryResponses = categories.stream()
 				.map(category -> modelMapper.map(category, CategoryResponse.class)).collect(Collectors.toList());
 

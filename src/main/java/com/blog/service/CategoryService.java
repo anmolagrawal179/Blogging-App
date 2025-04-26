@@ -8,7 +8,7 @@ public interface CategoryService {
 
 	CategoryResponse addCategory(CategoryResponse categoryResponse);
 
-	List<CategoryResponse> getAllCategories();
+	List<CategoryResponse> getAllCategories(Integer pageNumber, Integer pageSize);
 
 	CategoryResponse getCategoryById(Long id);
 
