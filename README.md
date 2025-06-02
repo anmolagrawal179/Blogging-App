@@ -110,7 +110,7 @@ The Blogging App is a robust platform built using **Spring Boot**, **Hibernate**
 4. **Access the Application**:
 
    - Open your browser and navigate to: `http://localhost:8080`.
-   - Access the API documentation at: `http://localhost:8080/swagger-ui.html`.
+   - Access the API documentation at: `http://localhost:8080/swagger-ui/index.html`.
 
 ## API Documentation
 
