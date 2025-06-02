@@ -9,7 +9,7 @@ The Blogging App is a robust platform built using **Spring Boot**, **Hibernate**
 
 1. **User Management**:
 
-   - User registration.
+   - User registration and authentication.
    - Profile updates.
 
 2. **Category Management**:

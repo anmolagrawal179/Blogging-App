@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.blog.entity.User;
@@ -22,16 +23,21 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 
 	private ModelMapper modelMapper;
+	
+	private PasswordEncoder passwordEncoder;
 
-	public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+
+	public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
 		super();
 		this.userRepository = userRepository;
 		this.modelMapper = modelMapper;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
 	public UserResponse addUser(UserResponse userResponse) {
 		User user = modelMapper.map(userResponse, User.class);
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		User savedUser = userRepository.save(user);
 		return modelMapper.map(savedUser, UserResponse.class);
 	}
